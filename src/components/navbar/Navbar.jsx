@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import newRequest from "../../utils/newRequest";
 import "./Navbar.scss";
 
 function Navbar() {
@@ -19,12 +20,18 @@ function Navbar() {
         };
     }, []);
 
-    // const currentUser = null
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-    const currentUser = {
-        id: 1,
-        username: "Kamrul Islam",
-        isSeller: true,
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await newRequest.post("/auth/logout");
+            localStorage.setItem("currentUser", null);
+            navigate("/");
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     return (
@@ -43,36 +50,35 @@ function Navbar() {
                     {!currentUser?.isSeller && <span>Become a Seller</span>}
                     {currentUser ? (
                         <div className="user" onClick={() => setOpen(!open)}>
-                            <img
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzHQv_th9wq3ivQ1CVk7UZRxhbPq64oQrg5Q&usqp=CAU"
-                                alt=""
-                            />
+                            <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
                             <span>{currentUser?.username}</span>
-                            {open && <div className="options">
-                                {currentUser.isSeller && (
-                                    <>
-                                        <Link className="link" to="/myGigs">
-                                            Gigs
-                                        </Link>
-                                        <Link className="link" to="/add">
-                                            Add New Gig
-                                        </Link>
-                                    </>
-                                )}
-                                <Link className="link" to="/orders">
-                                    Orders
-                                </Link>
-                                <Link className="link" to="/messages">
-                                    Messages
-                                </Link>
-                                <Link className="link" to="/">
-                                    Logout
-                                </Link>
-                            </div>}
+                            {open && (
+                                <div className="options">
+                                    {currentUser.isSeller && (
+                                        <>
+                                            <Link className="link" to="/mygigs">
+                                                Gigs
+                                            </Link>
+                                            <Link className="link" to="/add">
+                                                Add New Gig
+                                            </Link>
+                                        </>
+                                    )}
+                                    <Link className="link" to="/orders">
+                                        Orders
+                                    </Link>
+                                    <Link className="link" to="/messages">
+                                        Messages
+                                    </Link>
+                                    <Link className="link" onClick={handleLogout}>
+                                        Logout
+                                    </Link>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <>
-                            <span>Sign in</span>
+                                <Link to="/login" className="link">Sign in</Link>
                             <Link className="link" to="/register">
                                 <button>Join</button>
                             </Link>

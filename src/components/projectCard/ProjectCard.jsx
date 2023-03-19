@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import './ProjectCard.scss'
 
 const ProjectCard = ({ card }) => {
-    console.log(card);
+    // console.log(card);
     return (
         <Link to='/' className='link'>
             <div className='projectCard'>

@@ -1,29 +1,39 @@
+import "./App.scss";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import React from "react";
-import {
-  createBrowserRouter, RouterProvider, Outlet
-} from "react-router-dom";
-import Footer from "./components/footer/Footer";
 import Navbar from "./components/navbar/Navbar";
-import Add from "./pages/add/Add";
-import Gig from "./pages/gig/Gig";
+import Footer from "./components/footer/Footer";
+import Home from "./pages/home/Home";
 import Gigs from "./pages/gigs/Gigs";
-import Home from './pages/home/Home';
-import Message from "./pages/message/Message";
-import Messages from "./pages/messages/Messages";
-import MyGigs from "./pages/myGigs/MyGigs";
+import Gig from "./pages/gig/Gig";
+import Login from "./pages/login/Login";
+import Register from "./pages/register/Register";
+import Add from "./pages/add/Add";
 import Orders from "./pages/orders/Orders";
-import './App.scss'
+import Messages from "./pages/messages/Messages";
+import Message from "./pages/message/Message";
+import MyGigs from "./pages/myGigs/MyGigs";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import Success from "./pages/success/Success";
+import Pay from "./pages/pay/Pay";
 function App() {
+  const queryClient = new QueryClient();
+
   const Layout = () => {
     return (
       <div className="app">
-        <Navbar />
-        <Outlet />
-        <Footer />
+        <QueryClientProvider client={queryClient}>
+          <Navbar />
+          <Outlet />
+          <Footer />
+        </QueryClientProvider>
       </div>
+    );
+  };
 
-    )
-  }
   const router = createBrowserRouter([
     {
       path: "/",
@@ -31,45 +41,57 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Home />
+          element: <Home />,
         },
         {
           path: "/gigs",
-          element: <Gigs />
-        },
-        {
-          path: "/gig/:id",
-          element: <Gig />
-        },
-        {
-          path: "/orders",
-          element: <Orders />
+          element: <Gigs />,
         },
         {
           path: "/myGigs",
-          element: <MyGigs />
+          element: <MyGigs />,
         },
         {
-          path: "/add",
-          element: <Add />
+          path: "/orders",
+          element: <Orders />,
         },
         {
           path: "/messages",
-          element: <Messages />
+          element: <Messages />,
         },
         {
           path: "/message/:id",
-          element: <Message />
+          element: <Message />,
         },
-
-      ]
+        {
+          path: "/add",
+          element: <Add />,
+        },
+        {
+          path: "/gig/:id",
+          element: <Gig />,
+        },
+        {
+          path: "/register",
+          element: <Register />,
+        },
+        {
+          path: "/login",
+          element: <Login />,
+        },
+        {
+          path: "/pay/:id",
+          element: <Pay />,
+        },
+        {
+          path: "/success",
+          element: <Success />,
+        },
+      ],
     },
   ]);
-  return (
-    <div className="App">
-      <RouterProvider router={router} />
-    </div>
-  );
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;
